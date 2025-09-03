@@ -2,98 +2,116 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Viewport golden para iPhone 11 Pro Max -->
-    <meta name="viewport" content="width=414px, initial-scale=1.0, viewport-fit=cover">
+    <!-- Viewport optimizado para iPhone 11 Pro Max -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Tarjeta de Lealtad - Cafetería</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Registro - Maestra Maria Café</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         :root {
-            --cafe-oscuro: #4E342E;
-            --cafe-medio: #795548;
-            --cafe-claro: #D7CCC8;
-            --dorado: #FFD700;
-            --crema: #FFF9E6;
-            --texto-oscuro: #3E2723;
-            --verde: #2E7D32;
-            --rojo: #C62828;
-            --safe-area-inset: env(safe-area-inset-top, 0px);
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-area-inset-left: env(safe-area-inset-left, 0px);
+            --safe-area-inset-right: env(safe-area-inset-right, 0px);
         }
         
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
         }
         
-        html {
-            width: 100vw;
-            height: 100%;
-            overflow-x: hidden;
-            background: #f5f5f5;
-            /* Ajuste exacto para 11 Pro Max */
-            font-size: 16px;
-        }
-        
         body {
-            width: 414px; /* Ancho lógico del dispositivo */
-            height: 100%;
-            margin: 0 auto;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
+            min-height: 100vh;
             position: relative;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            color: var(--texto-oscuro);
-            padding: 15px;
-            background-color: #f5f5f5;
-        }
-        
-        .container {
+            overflow-x: hidden;
             width: 100%;
+            max-width: 414px; /* Ancho del iPhone 11 Pro Max */
             margin: 0 auto;
+            padding-left: var(--safe-area-inset-left);
+            padding-right: var(--safe-area-inset-right);
         }
         
-        .header {
-            text-align: center;
-            padding: 20px 15px;
-            background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%);
-            color: white;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        @supports(padding: max(0px)) {
+            body {
+                padding-left: max(var(--safe-area-inset-left), 0px);
+                padding-right: max(var(--safe-area-inset-right), 0px);
+                padding-top: max(var(--safe-area-inset-top), 0px);
+                padding-bottom: max(var(--safe-area-inset-bottom), 0px);
+            }
         }
         
-        .header h1 {
-            margin-bottom: 8px;
-            font-size: 1.8rem;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 2px, transparent 2px);
+            background-size: 50px 50px, 60px 60px, 80px 80px;
+            pointer-events: none;
+            z-index: -1;
         }
         
-        .header p {
-            font-size: 0.95rem;
-            opacity: 0.9;
+        .coffee-bean {
+            animation: float 3s ease-in-out infinite;
         }
         
-        .badge {
-            display: inline-block;
-            background: var(--dorado);
-            color: var(--cafe-oscuro);
-            padding: 6px 15px;
-            border-radius: 18px;
-            font-weight: bold;
-            margin-top: 12px;
-            font-size: 0.9rem;
+        .coffee-bean:nth-child(2) {
+            animation-delay: 1s;
+        }
+        
+        .coffee-bean:nth-child(3) {
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .steam {
+            animation: steam 2s ease-in-out infinite;
+        }
+        
+        @keyframes steam {
+            0%, 100% { opacity: 0.3; transform: translateY(0px); }
+            50% { opacity: 0.7; transform: translateY(-5px); }
+        }
+        
+        .blur-box {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
         }
         
         .tabs {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
         
         .tab {
@@ -103,24 +121,18 @@
             cursor: pointer;
             transition: background-color 0.3s;
             font-weight: 600;
-            font-size: 0.95rem;
         }
         
         .tab.active {
-            background: var(--cafe-medio);
+            background: #10b981;
             color: white;
         }
         
         .tab:not(.active):hover {
-            background: var(--cafe-claro);
+            background: rgba(16, 185, 129, 0.1);
         }
         
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
             display: none;
         }
         
@@ -128,73 +140,13 @@
             display: block;
         }
         
-        .card h2 {
-            color: var(--cafe-oscuro);
-            margin-bottom: 15px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid var(--cafe-claro);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.3rem;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--cafe-oscuro);
-            font-size: 0.95rem;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--cafe-claro);
-            border-radius: 6px;
-            font-size: 16px; /* Tamaño mínimo para iOS */
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus {
-            border-color: var(--cafe-medio);
-            outline: none;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-size: 16px; /* Tamaño mínimo para iOS */
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
         .alert {
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 12px 0;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.95rem;
         }
         
         .alert-success {
@@ -215,356 +167,270 @@
             border-left: 4px solid #2196F3;
         }
         
-        .alert i {
-            font-size: 1.1rem;
-        }
-        
         .hidden {
             display: none;
         }
         
-        .customer-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
+        /* Ajustes específicos para móviles */
+        .main-container {
+            width: 100%;
+            max-width: 414px;
+            padding: 20px 16px;
+            box-sizing: border-box;
         }
         
-        .customer-detail {
-            flex: 1;
-        }
-        
-        .customer-name {
-            font-weight: 600;
-            color: var(--cafe-oscuro);
-            font-size: 1.3rem;
-        }
-        
-        .customer-phone {
-            font-size: 0.95rem;
-            color: var(--cafe-medio);
-        }
-        
-        .customer-visits {
-            text-align: center;
-        }
-        
-        .visits-count {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--cafe-oscuro);
-        }
-        
-        .visits-label {
-            font-size: 0.9rem;
-            color: var(--cafe-medio);
-        }
-        
-        .stamp-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .stamp-slot {
-            width: 50px;
-            height: 50px;
-            border: 2px dashed var(--cafe-medio);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.7);
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        
-        .stamped {
-            background-color: var(--dorado);
-            border: 2px solid var(--cafe-oscuro);
-        }
-        
-        .gold-star {
-            color: var(--cafe-oscuro);
-            font-size: 22px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 15px;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 12px;
-            background: var(--crema);
-            border-radius: 8px;
-        }
-        
-        .stat-number {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: var(--cafe-oscuro);
-        }
-        
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--cafe-medio);
-        }
-        
-        .rewards-section {
-            margin-top: 20px;
-        }
-        
-        .reward-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border: 1px solid var(--cafe-claro);
-            border-radius: 8px;
-            margin-bottom: 12px;
-            background: white;
-        }
-        
-        .reward-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--dorado);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-size: 1.2rem;
-            color: var(--cafe-oscuro);
-        }
-        
-        .reward-info {
-            flex: 1;
-        }
-        
-        .reward-title {
-            font-weight: 600;
-            color: var(--cafe-oscuro);
-            font-size: 0.95rem;
-        }
-        
-        .reward-desc {
-            font-size: 0.85rem;
-            color: var(--cafe-medio);
-        }
-        
-        .reward-status {
-            padding: 4px 8px;
-            border-radius: 16px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .status-available {
-            background: #E8F5E9;
-            color: #2E7D32;
-        }
-        
-        .status-pending {
-            background: #FFF8E1;
-            color: #FF8F00;
-        }
-        
-        .status-claimed {
-            background: #E3F2FD;
-            color: #1565C0;
-        }
-        
-        .qr-section {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--crema);
-            border-radius: 8px;
-        }
-        
-        .qr-code {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 12px;
-            background: white;
-            padding: 8px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            color: var(--cafe-oscuro);
-        }
-        
-        .qr-desc {
-            font-size: 0.85rem;
-            color: var(--cafe-medio);
-            margin-top: 8px;
-        }
-        
-        /* Ajuste notch */
-        @supports(padding: max(0px)) {
-            body {
-                padding-left: max(env(safe-area-inset-left), 0px);
-                padding-right: max(env(safe-area-inset-right), 0px);
-            }
-        }
-        
-        /* Ajustes específicos para dispositivos móviles */
+        /* Ajustar elementos decorativos para pantallas más pequeñas */
         @media (max-width: 414px) {
-            body {
-                width: 100%;
-                padding: 12px;
+            .coffee-bean {
+                transform: scale(0.8);
             }
             
-            .container {
-                width: 100%;
+            .coffee-bean:nth-child(1) {
+                top: 2% !important;
+                left: 5% !important;
             }
             
-            .stamp-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
+            .coffee-bean:nth-child(2) {
+                top: 5% !important;
+                right: 5% !important;
             }
             
-            .stamp-slot {
-                width: 45px;
-                height: 45px;
-                font-size: 0.9rem;
+            .coffee-bean:nth-child(3) {
+                bottom: 12% !important;
+                left: 5% !important;
             }
             
-            .gold-star {
-                font-size: 20px;
+            .coffee-bean:nth-child(4) {
+                bottom: 20% !important;
+                right: 5% !important;
             }
             
-            .customer-info {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
+            .coffee-bean:nth-child(5) {
+                top: 15% !important;
+                right: 8% !important;
+            }
+            
+            .coffee-bean:nth-child(6) {
+                bottom: 30% !important;
+                left: 8% !important;
             }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-star"></i> Tarjeta de Lealtad</h1>
-            <p>Sistema de fidelidad de nuestra cafetería</p>
-            <div class="badge">Programa de Lealtad</div>
+<body class="flex items-center justify-center p-4">
+    <!-- Decorative coffee elements - Mobile optimized -->
+    <!-- Realistic Coffee Beans -->
+    <div class="absolute top-4 left-2 coffee-bean">
+        <svg class="w-5 h-5 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="12" rx="5" ry="8" transform="rotate(-15 12 12)" fill="#8B4513"/>
+            <path d="M12 6c-1 0-2 2-2 6s1 6 2 6 2-2 2-6-1-6-2-6z" fill="#654321" transform="rotate(-15 12 12)"/>
+        </svg>
+    </div>
+    
+    <div class="absolute top-8 right-3 coffee-bean">
+        <svg class="w-4 h-4 text-amber-700" fill="currentColor" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="12" rx="4" ry="6" transform="rotate(25 12 12)" fill="#A0522D"/>
+            <path d="M12 7c-0.5 0-1 1.5-1 5s0.5 5 1 5 1-1.5 1-5-0.5-5-1-5z" fill="#8B4513" transform="rotate(25 12 12)"/>
+        </svg>
+    </div>
+    
+    <div class="absolute bottom-16 left-2 coffee-bean">
+        <svg class="w-5 h-5 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="12" rx="4.5" ry="7" transform="rotate(-45 12 12)" fill="#8B4513"/>
+            <path d="M12 6.5c-0.8 0-1.5 2-1.5 5.5s0.7 5.5 1.5 5.5 1.5-2 1.5-5.5-0.7-5.5-1.5-5.5z" fill="#654321" transform="rotate(-45 12 12)"/>
+        </svg>
+    </div>
+    
+    <div class="absolute bottom-24 right-3 coffee-bean">
+        <svg class="w-5 h-5 text-amber-700" fill="currentColor" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="12" rx="5" ry="8" transform="rotate(35 12 12)" fill="#A0522D"/>
+            <path d="M12 5.5c-1 0-2 2.5-2 6.5s1 6.5 2 6.5 2-2.5 2-6.5-1-6.5-2-6.5z" fill="#8B4513" transform="rotate(35 12 12)"/>
+        </svg>
+    </div>
+    
+    <!-- Coffee Cup with Handle -->
+    <div class="absolute top-20 right-1 coffee-bean">
+        <div class="relative">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <!-- Cup body -->
+                <path d="M4 7v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7H4z" fill="#f3f4f6"/>
+                <!-- Coffee inside -->
+                <path d="M5 8v8c0 0.5.4 1 1 1h8c0.6 0 1-0.5 1-1V8H5z" fill="#8B4513"/>
+                <!-- Handle -->
+                <path d="M18 9v6c0 1.1.9 2 2 2s2-.9 2-2v-2c0-2.2-1.8-4-4-4z" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+            </svg>
+            <div class="absolute -top-1 left-1/2 transform -translate-x-1/2">
+                <svg class="w-2 h-3 text-gray-400 steam" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 2c0 2-1 3-1 3s1 1 1 3c0-2 1-3 1-3s-1-1-1-3zm8 0c0 2-1 3-1 3s1 1 1 3c0-2 1-3 1-3s-1-1-1-3z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Another realistic coffee bean -->
+    <div class="absolute bottom-40 left-1 coffee-bean">
+        <svg class="w-4 h-4 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="12" rx="4.5" ry="7.5" transform="rotate(-30 12 12)" fill="#A0522D"/>
+            <path d="M12 6c-0.9 0-1.8 2.2-1.8 6s0.9 6 1.8 6 1.8-2.2 1.8-6-0.9-6-1.8-6z" fill="#8B4513" transform="rotate(-30 12 12)"/>
+        </svg>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Header with your logo -->
+        <div class="text-center mb-6">
+            <div class="logo-container mb-3">
+                <img src="Logo Maestra Maria.png" 
+                     alt="Maestra Maria Café" 
+                     class="w-20 h-20 mx-auto rounded-full object-cover shadow-lg border-2 border-emerald-200"
+                     onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
+                <!-- Fallback logo if image fails to load -->
+                <svg id="fallback-logo" class="w-16 h-16 text-emerald-600 mx-auto hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M2 21h20v-2H2v2zM20 8H4V6c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v2zM4 10h16v8c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-8z"/>
+                    <circle cx="7" cy="14" r="1"/>
+                    <circle cx="12" cy="14" r="1"/>
+                    <circle cx="17" cy="14" r="1"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-emerald-800 mt-3 mb-1">Maestra Maria Café</h1>
+            <p class="text-emerald-700 text-base">Sistema de Tarjeta de Lealtad</p>
         </div>
         
+        <!-- Tabs for Registration and Consultation -->
         <div class="tabs">
             <div class="tab active" data-tab="register">Registrarse</div>
             <div class="tab" data-tab="consult">Consultar Tarjeta</div>
         </div>
-        
-        <!-- Pestaña de Registro -->
+
+        <!-- Registration Card -->
         <div class="card active" id="registerCard">
-            <h2><i class="fas fa-user-plus"></i> Registro de Cliente</h2>
-            
-            <div class="form-group">
-                <label for="registerName"><i class="fas fa-user"></i> Nombre Completo</label>
-                <input type="text" id="registerName" placeholder="Ingresa tu nombre completo">
-            </div>
-            
-            <div class="form-group">
-                <label for="registerPhone"><i class="fas fa-phone"></i> Número de Teléfono</label>
-                <input type="tel" id="registerPhone" placeholder="Ingresa tu número de teléfono">
-            </div>
-            
-            <div class="form-group">
-                <label for="registerEmail"><i class="fas fa-envelope"></i> Correo Electrónico (Opcional)</label>
-                <input type="email" id="registerEmail" placeholder="Ingresa tu correo electrónico">
-            </div>
-            
-            <button class="btn" id="registerBtn">
-                <i class="fas fa-check-circle"></i> Registrar
-            </button>
-            
-            <div id="registerAlert" class="alert hidden">
-                <i class="fas fa-info-circle"></i>
-                <span id="registerAlertMessage"></span>
+            <div class="blur-box rounded-2xl p-6 shadow-2xl">
+                <form id="registrationForm" class="space-y-5">
+                    <!-- Nombre Completo -->
+                    <div>
+                        <label for="fullName" class="block text-emerald-800 font-semibold mb-2 text-base">
+                            Nombre Completo
+                        </label>
+                        <input 
+                            type="text" 
+                            id="fullName" 
+                            name="fullName"
+                            placeholder="Ingresa tu nombre completo"
+                            class="input-field w-full px-4 py-3 rounded-xl text-emerald-800 placeholder-emerald-500 text-base focus:outline-none"
+                            required
+                        >
+                    </div>
+
+                    <!-- Número de Teléfono -->
+                    <div>
+                        <label for="phoneNumber" class="block text-emerald-800 font-semibold mb-2 text-base">
+                            Número de Teléfono
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            name="phoneNumber"
+                            placeholder="Ingresa tu número de teléfono"
+                            class="input-field w-full px-4 py-3 rounded-xl text-emerald-800 placeholder-emerald-500 text-base focus:outline-none"
+                            required
+                        >
+                    </div>
+
+                    <!-- Email (Opcional) -->
+                    <div>
+                        <label for="email" class="block text-emerald-800 font-semibold mb-2 text-base">
+                            Correo Electrónico (Opcional)
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            placeholder="Ingresa tu correo electrónico"
+                            class="input-field w-full px-4 py-3 rounded-xl text-emerald-800 placeholder-emerald-500 text-base focus:outline-none"
+                        >
+                    </div>
+
+                    <!-- Botón de Registro -->
+                    <button 
+                        type="submit"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 mt-6"
+                    >
+                        Registrarse
+                    </button>
+                </form>
+
+                <div id="registerAlert" class="alert hidden mt-4">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="registerAlertMessage"></span>
+                </div>
             </div>
         </div>
-        
-        <!-- Pestaña de Consulta -->
+
+        <!-- Consultation Card -->
         <div class="card" id="consultCard">
-            <h2><i class="fas fa-search"></i> Consultar Tarjeta</h2>
-            
-            <div class="form-group">
-                <label for="consultPhone"><i class="fas fa-phone"></i> Número de Teléfono</label>
-                <input type="tel" id="consultPhone" placeholder="Ingresa tu número de teléfono registrado">
-            </div>
-            
-            <button class="btn" id="consultBtn">
-                <i class="fas fa-search"></i> Ver mi Tarjeta
-            </button>
-            
-            <div id="consultAlert" class="alert hidden">
-                <i class="fas fa-info-circle"></i>
-                <span id="consultAlertMessage"></span>
+            <div class="blur-box rounded-2xl p-6 shadow-2xl">
+                <form id="consultationForm" class="space-y-5">
+                    <!-- Número de Teléfono -->
+                    <div>
+                        <label for="consultPhone" class="block text-emerald-800 font-semibold mb-2 text-base">
+                            Número de Teléfono
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="consultPhone" 
+                            name="consultPhone"
+                            placeholder="Ingresa tu número de teléfono registrado"
+                            class="input-field w-full px-4 py-3 rounded-xl text-emerald-800 placeholder-emerald-500 text-base focus:outline-none"
+                            required
+                        >
+                    </div>
+
+                    <!-- Botón de Consulta -->
+                    <button 
+                        type="submit"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    >
+                        Consultar Mi Tarjeta
+                    </button>
+                </form>
+
+                <div id="consultAlert" class="alert hidden mt-4">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="consultAlertMessage"></span>
+                </div>
             </div>
         </div>
-        
-        <!-- Tarjeta de Lealtad (se muestra después del registro/consulta) -->
-        <div class="card" id="loyaltyCard">
-            <h2><i class="fas fa-user"></i> Mi Información</h2>
-            
-            <div class="customer-info">
-                <div class="customer-detail">
-                    <div class="customer-name" id="customerName">Carlos Mendoza</div>
-                    <div class="customer-phone" id="customerPhoneText">555-123-4567</div>
-                </div>
-                <div class="customer-visits">
-                    <div class="visits-count" id="visitsCount">0</div>
-                    <div class="visits-label">visitas acumuladas</div>
-                </div>
+
+        <!-- Coffee shop ambiance elements -->
+        <div class="text-center mt-4 space-y-3">
+            <!-- Coffee shop icons row -->
+            <div class="flex justify-center space-x-4 mb-3">
+                <div class="text-xl">☕</div>
+                <div class="text-xl">🥐</div>
+                <div class="text-xl">🧁</div>
+                <div class="text-xl">🍰</div>
             </div>
             
-            <h3 style="margin: 20px 0 12px; text-align: center; color: var(--cafe-oscuro);">
-                <i class="fas fa-star"></i> Mis Estrellas <i class="fas fa-star"></i>
-            </h3>
+            <!-- Welcome message -->
+            <p class="text-emerald-700 text-sm">
+                ¡Bienvenido a nuestra familia cafetera! ☕
+            </p>
             
-            <div class="stamp-grid" id="stampGrid">
-                <!-- Las estrellas se generarán dinámicamente con JavaScript -->
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalVisits">0</div>
-                    <div class="stat-label">Visitas totales</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="remainingVisits">5</div>
-                    <div class="stat-label">Para próxima recompensa</div>
-                </div>
-            </div>
-            
-            <div class="qr-section">
-                <div class="qr-code" id="customerQr">
-                    <i class="fas fa-coffee"></i>
-                </div>
-                <p class="qr-desc">Muestra este código al realizar tu pedido para acumular visitas</p>
-            </div>
-            
-            <button class="btn" id="backBtn" style="margin-top: 15px;">
-                <i class="fas fa-arrow-left"></i> Volver
-            </button>
-        </div>
-        
-        <!-- Sección de Recompensas -->
-        <div class="card" id="rewardsCard">
-            <h2><i class="fas fa-gift"></i> Mis Recompensas</h2>
-            
-            <div class="rewards-section" id="rewardsList">
-                <!-- Las recompensas se generarán dinámicamente con JavaScript -->
+            <!-- Coffee shop atmosphere -->
+            <div class="flex justify-center items-center space-x-1 text-emerald-600">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <span class="text-xs">Ambiente acogedor desde 2020</span>
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
             </div>
         </div>
     </div>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
     <script>
         // CONFIGURACIÓN DE JSONBIN (TUS DATOS)
@@ -577,31 +443,18 @@
         const cards = document.querySelectorAll('.card');
         const registerCard = document.getElementById('registerCard');
         const consultCard = document.getElementById('consultCard');
-        const loyaltyCard = document.getElementById('loyaltyCard');
-        const rewardsCard = document.getElementById('rewardsCard');
         
-        const registerName = document.getElementById('registerName');
-        const registerPhone = document.getElementById('registerPhone');
-        const registerEmail = document.getElementById('registerEmail');
-        const registerBtn = document.getElementById('registerBtn');
+        const fullNameInput = document.getElementById('fullName');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const emailInput = document.getElementById('email');
+        const registrationForm = document.getElementById('registrationForm');
         const registerAlert = document.getElementById('registerAlert');
         const registerAlertMessage = document.getElementById('registerAlertMessage');
         
-        const consultPhone = document.getElementById('consultPhone');
-        const consultBtn = document.getElementById('consultBtn');
+        const consultPhoneInput = document.getElementById('consultPhone');
+        const consultationForm = document.getElementById('consultationForm');
         const consultAlert = document.getElementById('consultAlert');
         const consultAlertMessage = document.getElementById('consultAlertMessage');
-        
-        const customerName = document.getElementById('customerName');
-        const customerPhoneText = document.getElementById('customerPhoneText');
-        const visitsCount = document.getElementById('visitsCount');
-        const totalVisits = document.getElementById('totalVisits');
-        const remainingVisits = document.getElementById('remainingVisits');
-        const stampGrid = document.getElementById('stampGrid');
-        const rewardsList = document.getElementById('rewardsList');
-        const backBtn = document.getElementById('backBtn');
-        
-        let currentClient = null;
         
         // Cambiar entre pestañas
         tabs.forEach(tab => {
@@ -680,10 +533,12 @@
         }
         
         // Registrar nuevo cliente
-        async function registerClient() {
-            const name = registerName.value.trim();
-            const phone = registerPhone.value.trim();
-            const email = registerEmail.value.trim();
+        async function registerClient(e) {
+            e.preventDefault();
+            
+            const name = fullNameInput.value.trim();
+            const phone = phoneNumberInput.value.trim();
+            const email = emailInput.value.trim();
             
             if (!name || !phone) {
                 showAlert(registerAlert, registerAlertMessage, 'Por favor, completa todos los campos obligatorios', 'error');
@@ -699,7 +554,7 @@
                 showAlert(registerAlert, registerAlertMessage, 'Este número de teléfono ya está registrado', 'error');
                 // Cambiar a la pestaña de consulta
                 tabs[1].click();
-                consultPhone.value = phone;
+                consultPhoneInput.value = phone;
                 return;
             }
             
@@ -721,22 +576,31 @@
             const success = await saveClients(clients);
             
             if (success) {
+                // Success animation
+                const button = registrationForm.querySelector('button[type="submit"]');
+                const originalText = button.textContent;
+                
+                button.textContent = '¡Registrado! ✓';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+                
                 showAlert(registerAlert, registerAlertMessage, `¡Registro exitoso, ${name}!`, 'success');
                 
-                // Mostrar la tarjeta del cliente
-                loadClientData(newClient);
-                
-                // Ocultar formularios y mostrar tarjeta
-                registerCard.classList.remove('active');
-                consultCard.classList.remove('active');
-                loyaltyCard.classList.add('active');
-                rewardsCard.classList.add('active');
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    registrationForm.reset();
+                    button.textContent = originalText;
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+                }, 2000);
             }
         }
         
         // Consultar cliente existente
-        async function consultClient() {
-            const phone = consultPhone.value.trim();
+        async function consultClient(e) {
+            e.preventDefault();
+            
+            const phone = consultPhoneInput.value.trim();
             
             if (!phone) {
                 showAlert(consultAlert, consultAlertMessage, 'Por favor, ingresa tu número de teléfono', 'error');
@@ -751,125 +615,60 @@
                 return;
             }
             
-            // Mostrar la tarjeta del cliente
-            loadClientData(client);
+            // Success animation
+            const button = consultationForm.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
             
-            // Ocultar formularios y mostrar tarjeta
-            consultCard.classList.remove('active');
-            loyaltyCard.classList.add('active');
-            rewardsCard.classList.add('active');
+            button.textContent = '¡Encontrado! ✓';
+            button.classList.add('bg-green-500');
+            button.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
             
-            showAlert(consultAlert, consultAlertMessage, `¡Bienvenido ${client.name}!`, 'success');
-        }
-        
-        // Cargar datos del cliente en la tarjeta
-        function loadClientData(client) {
-            currentClient = client;
+            showAlert(consultAlert, consultAlertMessage, `¡Bienvenido ${client.name}! Visitas: ${client.visits}, Estrellas: ${client.stars}`, 'success');
             
-            // Mostrar información del cliente
-            customerName.textContent = client.name;
-            customerPhoneText.textContent = client.phone;
-            visitsCount.textContent = client.visits;
-            totalVisits.textContent = client.visits;
-            remainingVisits.textContent = Math.max(0, 5 - (client.visits % 5));
-            
-            // Actualizar estampas
-            updateStampGrid(client.visits);
-            
-            // Actualizar recompensas
-            updateRewards(client.visits);
-        }
-        
-        // Volver atrás
-        function goBack() {
-            loyaltyCard.classList.remove('active');
-            rewardsCard.classList.remove('active');
-            consultCard.classList.add('active');
-            consultPhone.value = '';
-        }
-        
-        // Actualizar cuadrícula de estampas
-        function updateStampGrid(visits) {
-            stampGrid.innerHTML = '';
-            
-            // Calcular el número de estrellas completas (cada 5 visitas = 1 estrella)
-            const completedStars = Math.floor(visits / 5);
-            const currentProgress = visits % 5;
-            
-            for (let i = 1; i <= 5; i++) {
-                const stampSlot = document.createElement('div');
-                stampSlot.className = 'stamp-slot';
-                
-                if (i <= currentProgress) {
-                    stampSlot.classList.add('stamped');
-                    const starIcon = document.createElement('i');
-                    starIcon.className = 'fas fa-star gold-star';
-                    stampSlot.appendChild(starIcon);
-                } else {
-                    stampSlot.textContent = i;
-                }
-                
-                stampGrid.appendChild(stampSlot);
-            }
-            
-            // Mostrar contador de recompensas ganadas
-            const rewardCounter = document.createElement('div');
-            rewardCounter.style.gridColumn = '1 / -1';
-            rewardCounter.style.textAlign = 'center';
-            rewardCounter.style.marginTop = '8px';
-            rewardCounter.style.color = 'var(--cafe-medio)';
-            rewardCounter.innerHTML = `<i class="fas fa-trophy"></i> Has ganado ${completedStars} recompensa(s) completa(s)`;
-            stampGrid.appendChild(rewardCounter);
-        }
-        
-        // Actualizar recompensas disponibles
-        function updateRewards(visits) {
-            rewardsList.innerHTML = '';
-            
-            const rewards = [
-                { visits: 5, title: 'Café Gratis', desc: 'Canjea después de 5 visitas', icon: 'coffee' },
-                { visits: 10, title: 'Postre Gratis', desc: 'Canjea después de 10 visitas', icon: 'cookie' },
-                { visits: 15, title: 'Desayuno Completo', desc: 'Canjea después de 15 visitas', icon: 'bacon' },
-                { visits: 20, title: 'Combo Especial', desc: 'Canjea después de 20 visitas', icon: 'gift' }
-            ];
-            
-            rewards.forEach(reward => {
-                const rewardItem = document.createElement('div');
-                rewardItem.className = 'reward-item';
-                
-                let statusClass = '';
-                let statusText = '';
-                
-                if (visits >= reward.visits) {
-                    statusClass = 'status-available';
-                    statusText = 'Disponible';
-                } else {
-                    statusClass = 'status-pending';
-                    statusText = `Faltan ${reward.visits - visits} visitas`;
-                }
-                
-                rewardItem.innerHTML = `
-                    <div class="reward-icon">
-                        <i class="fas fa-${reward.icon}"></i>
-                    </div>
-                    <div class="reward-info">
-                        <div class="reward-title">${reward.title}</div>
-                        <div class="reward-desc">${reward.desc}</div>
-                    </div>
-                    <div class="reward-status ${statusClass}">${statusText}</div>
-                `;
-                
-                rewardsList.appendChild(rewardItem);
-            });
+            // Reset after 2 seconds
+            setTimeout(() => {
+                consultationForm.reset();
+                button.textContent = originalText;
+                button.classList.remove('bg-green-500');
+                button.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+            }, 2000);
         }
         
         // Event Listeners
-        registerBtn.addEventListener('click', registerClient);
-        consultBtn.addEventListener('click', consultClient);
-        backBtn.addEventListener('click', goBack);
+        registrationForm.addEventListener('submit', registerClient);
+        consultationForm.addEventListener('submit', consultClient);
         
-        registerPhone.addEventListener('keypress', e => { if (e.key === 'Enter') registerClient(); });
-        consultPhone.addEventListener('keypress', e => { if (e.key === 'Enter') consultClient(); });
+        // Add focus effects to inputs
+        document.querySelectorAll('.input-field').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('transform', 'scale-105');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('transform', 'scale-105');
+            });
+        });
+
+        // Phone number formatting
+        phoneNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            } else if (value.length >= 3) {
+                value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
+            }
+            e.target.value = value;
+        });
+        
+        consultPhoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(\D/g, '');
+            if (value.length >= 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            } else if (value.length >= 3) {
+                value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
+            }
+            e.target.value = value;
+        });
     </script>
 </body>
 </html>

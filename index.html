@@ -2,665 +2,874 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- Viewport golden para iPhone 11 Pro Max -->
     <meta name="viewport" content="width=414px, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Tarjeta de Lealtad Maestra María</title>
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
+    <title>Tarjeta de Lealtad - Cafetería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            --cafe-oscuro: #4E342E;
+            --cafe-medio: #795548;
+            --cafe-claro: #D7CCC8;
+            --dorado: #FFD700;
+            --crema: #FFF9E6;
+            --texto-oscuro: #3E2723;
+            --verde: #2E7D32;
+            --rojo: #C62828;
             --safe-area-inset: env(safe-area-inset-top, 0px);
-            --gold-color: #ffd700;
-            --dark-gold: #d4af37;
-            --light-bg: #fffae6;
-            --maroon: #800020;
-            --cream: #fffdd0;
         }
+        
         * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
-            box-sizing: border-box;
         }
+        
         html {
             width: 100vw;
             height: 100%;
             overflow-x: hidden;
-            background: #000;
+            background: #f5f5f5;
+            /* Ajuste exacto para 11 Pro Max */
             font-size: 16px;
         }
+        
         body {
-            width: 414px;
+            width: 414px; /* Ancho lógico del dispositivo */
             height: 100%;
             margin: 0 auto;
             position: relative;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            background-color: var(--cream);
-            font-family: 'Georgia', serif;
-            color: #333;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23fffdd0"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23ffd700" stroke-width="1" stroke-opacity="0.1"/></svg>');
+            color: var(--texto-oscuro);
+            padding: 15px;
+            background-color: #f5f5f5;
         }
+        
         .container {
-            padding: 20px;
-            padding-top: max(env(safe-area-inset-top), 20px);
-            padding-bottom: max(env(safe-area-inset-bottom), 20px);
+            width: 100%;
+            margin: 0 auto;
         }
+        
         .header {
             text-align: center;
-            margin-bottom: 20px;
-            padding: 15px 0;
-            background: linear-gradient(135deg, var(--maroon) 0%, #a00030 100%);
-            border-radius: 15px;
+            padding: 20px 15px;
+            background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%);
             color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            border: 2px solid var(--dark-gold);
-        }
-        .header h1 {
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
-        .card-loyalty {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-            text-align: center;
-            border: 3px solid var(--dark-gold);
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M0,0 L60,60 M60,0 L0,60" stroke="%23ffd700" stroke-width="0.5" stroke-opacity="0.1"/></svg>');
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
         }
+        
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--dorado);
+            color: var(--cafe-oscuro);
+            padding: 6px 15px;
+            border-radius: 18px;
+            font-weight: bold;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .tab.active {
+            background: var(--cafe-medio);
+            color: white;
+        }
+        
+        .tab:not(.active):hover {
+            background: var(--cafe-claro);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .card.active {
+            display: block;
+        }
+        
+        .card h2 {
+            color: var(--cafe-oscuro);
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--cafe-claro);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--cafe-oscuro);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--cafe-claro);
+            border-radius: 6px;
+            font-size: 16px; /* Tamaño mínimo para iOS */
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--cafe-medio);
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--cafe-oscuro) 0%, var(--cafe-medio) 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 16px; /* Tamaño mínimo para iOS */
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .alert-success {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .alert-error {
+            background-color: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #F44336;
+        }
+        
+        .alert-info {
+            background-color: #E3F2FD;
+            color: #1565C0;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .alert i {
+            font-size: 1.1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .customer-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .customer-detail {
+            flex: 1;
+        }
+        
+        .customer-name {
+            font-weight: 600;
+            color: var(--cafe-oscuro);
+            font-size: 1.3rem;
+        }
+        
+        .customer-phone {
+            font-size: 0.95rem;
+            color: var(--cafe-medio);
+        }
+        
+        .customer-visits {
+            text-align: center;
+        }
+        
+        .visits-count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--cafe-oscuro);
+        }
+        
+        .visits-label {
+            font-size: 0.9rem;
+            color: var(--cafe-medio);
+        }
+        
         .stamp-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-            margin: 25px 0;
+            gap: 10px;
+            margin: 20px 0;
         }
+        
         .stamp-slot {
-            width: 60px;
-            height: 60px;
-            border: 2px dashed var(--dark-gold);
+            width: 50px;
+            height: 50px;
+            border: 2px dashed var(--cafe-medio);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto;
-            background-color: var(--light-bg);
-            position: relative;
+            background-color: rgba(255, 255, 255, 0.7);
+            font-weight: bold;
+            font-size: 1rem;
         }
+        
         .stamped {
-            background-color: var(--gold-color);
-            border: 2px solid var(--dark-gold);
+            background-color: var(--dorado);
+            border: 2px solid var(--cafe-oscuro);
         }
+        
         .gold-star {
-            width: 50px;
-            height: 50px;
-            margin: 5px;
-            filter: drop-shadow(0px 3px 2px rgba(0, 0, 0, 0.3));
+            color: var(--cafe-oscuro);
+            font-size: 22px;
         }
-        .form-group {
-            margin-bottom: 15px;
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
         }
-        input[type="tel"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            -webkit-appearance: none;
-            background-color: #fff;
-            font-family: 'Georgia', serif;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--maroon) 0%, #a00030 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            font-family: 'Georgia', serif;
-            border: 1px solid var(--dark-gold);
-        }
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .admin-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border: 2px solid var(--dark-gold);
-        }
-        .admin-section h3 {
+        
+        .stat-item {
             text-align: center;
-            margin-bottom: 15px;
-            color: var(--maroon);
-            font-weight: bold;
+            padding: 12px;
+            background: var(--crema);
+            border-radius: 8px;
         }
-        .request-item {
+        
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--cafe-oscuro);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--cafe-medio);
+        }
+        
+        .rewards-section {
+            margin-top: 20px;
+        }
+        
+        .reward-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 12px;
-            border-bottom: 1px solid #eee;
+            border: 1px solid var(--cafe-claro);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: white;
         }
-        .request-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .btn-approve {
-            background: #28a745;
-            padding: 8px 12px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: 1px solid #1e7e34;
-        }
-        .btn-deny {
-            background: #dc3545;
-            padding: 8px 12px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: 1px solid #c82333;
-        }
-        .alert {
-            padding: 12px;
-            border-radius: 10px;
-            margin: 15px 0;
-            text-align: center;
-            display: none;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .alert-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        .tab-container {
-            display: flex;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--dark-gold);
-        }
-        .tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: #e9ecef;
-            cursor: pointer;
-            font-family: 'Georgia', serif;
-            font-weight: bold;
-        }
-        .tab.active {
-            background: linear-gradient(135deg, var(--maroon) 0%, #a00030 100%);
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .history-item {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-        .history-date {
-            color: #6c757d;
-            font-size: 12px;
-        }
-        .brand-logo {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--maroon);
-            text-align: center;
-            margin-bottom: 10px;
-            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.2);
-        }
-        .reward-text {
-            font-style: italic;
-            color: var(--maroon);
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        .gold-divider {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold-color), transparent);
-            margin: 15px 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #6c757d;
-            font-size: 12px;
-        }
-        .premium-border {
-            border: 2px solid var(--dark-gold);
-            border-radius: 20px;
-            padding: 3px;
-            background: linear-gradient(45deg, var(--light-bg), #ffffff, var(--light-bg));
-        }
-        .vip-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--maroon);
-            color: gold;
+        
+        .reward-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--dorado);
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid gold;
-            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: var(--cafe-oscuro);
+        }
+        
+        .reward-info {
+            flex: 1;
+        }
+        
+        .reward-title {
+            font-weight: 600;
+            color: var(--cafe-oscuro);
+            font-size: 0.95rem;
+        }
+        
+        .reward-desc {
+            font-size: 0.85rem;
+            color: var(--cafe-medio);
+        }
+        
+        .reward-status {
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-available {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .status-pending {
+            background: #FFF8E1;
+            color: #FF8F00;
+        }
+        
+        .status-claimed {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+        
+        .qr-section {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--crema);
+            border-radius: 8px;
+        }
+        
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 12px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--cafe-oscuro);
+        }
+        
+        .qr-desc {
+            font-size: 0.85rem;
+            color: var(--cafe-medio);
+            margin-top: 8px;
+        }
+        
+        /* Ajuste notch */
+        @supports(padding: max(0px)) {
+            body {
+                padding-left: max(env(safe-area-inset-left), 0px);
+                padding-right: max(env(safe-area-inset-right), 0px);
+            }
+        }
+        
+        /* Ajustes específicos para dispositivos móviles */
+        @media (max-width: 414px) {
+            body {
+                width: 100%;
+                padding: 12px;
+            }
+            
+            .container {
+                width: 100%;
+            }
+            
+            .stamp-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .stamp-slot {
+                width: 45px;
+                height: 45px;
+                font-size: 0.9rem;
+            }
+            
+            .gold-star {
+                font-size: 20px;
+            }
+            
+            .customer-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Tarjeta de Lealtad Maestra María</h1>
-            <p>Gana estrellas con cada visita</p>
+            <h1><i class="fas fa-star"></i> Tarjeta de Lealtad</h1>
+            <p>Sistema de fidelidad de nuestra cafetería</p>
+            <div class="badge">Programa de Lealtad</div>
         </div>
         
-        <div class="brand-logo">MAESTRA MARÍA • ARTESANÍAS FINAS</div>
-        
-        <div class="tab-container">
-            <div class="tab active" onclick="switchTab('customer')">Cliente</div>
-            <div class="tab" onclick="switchTab('admin')">Gerente</div>
+        <div class="tabs">
+            <div class="tab active" data-tab="register">Registrarse</div>
+            <div class="tab" data-tab="consult">Consultar Tarjeta</div>
         </div>
         
-        <!-- Área de Clientes -->
-        <div id="customerTab" class="tab-content active">
-            <div class="premium-border">
-                <div class="card-loyalty">
-                    <h3>Mi Tarjeta de Lealtad</h3>
-                    <div class="gold-divider"></div>
-                    <p>¡Acumula 10 visitas y obtén una recompensa especial!</p>
-                    
-                    <div class="stamp-grid" id="stampGrid">
-                        <!-- Los espacios para estrellas se generarán con JavaScript -->
-                    </div>
-                    
-                    <div class="reward-text">¡Después de 10 visitas, tu próxima compra tiene 20% de descuento!</div>
-                    
-                    <div class="form-group">
-                        <input type="tel" id="phoneInput" placeholder="Ingresa tu número de teléfono" inputmode="numeric">
-                    </div>
-                    <button onclick="requestVisit()">Solicitar Registro de Visita</button>
-                    
-                    <div id="customerMessage" class="alert"></div>
+        <!-- Pestaña de Registro -->
+        <div class="card active" id="registerCard">
+            <h2><i class="fas fa-user-plus"></i> Registro de Cliente</h2>
+            
+            <div class="form-group">
+                <label for="registerName"><i class="fas fa-user"></i> Nombre Completo</label>
+                <input type="text" id="registerName" placeholder="Ingresa tu nombre completo">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerPhone"><i class="fas fa-phone"></i> Número de Teléfono</label>
+                <input type="tel" id="registerPhone" placeholder="Ingresa tu número de teléfono">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerEmail"><i class="fas fa-envelope"></i> Correo Electrónico (Opcional)</label>
+                <input type="email" id="registerEmail" placeholder="Ingresa tu correo electrónico">
+            </div>
+            
+            <button class="btn" id="registerBtn">
+                <i class="fas fa-check-circle"></i> Registrar
+            </button>
+            
+            <div id="registerAlert" class="alert hidden">
+                <i class="fas fa-info-circle"></i>
+                <span id="registerAlertMessage"></span>
+            </div>
+        </div>
+        
+        <!-- Pestaña de Consulta -->
+        <div class="card" id="consultCard">
+            <h2><i class="fas fa-search"></i> Consultar Tarjeta</h2>
+            
+            <div class="form-group">
+                <label for="consultPhone"><i class="fas fa-phone"></i> Número de Teléfono</label>
+                <input type="tel" id="consultPhone" placeholder="Ingresa tu número de teléfono registrado">
+            </div>
+            
+            <button class="btn" id="consultBtn">
+                <i class="fas fa-search"></i> Ver mi Tarjeta
+            </button>
+            
+            <div id="consultAlert" class="alert hidden">
+                <i class="fas fa-info-circle"></i>
+                <span id="consultAlertMessage"></span>
+            </div>
+        </div>
+        
+        <!-- Tarjeta de Lealtad (se muestra después del registro/consulta) -->
+        <div class="card" id="loyaltyCard">
+            <h2><i class="fas fa-user"></i> Mi Información</h2>
+            
+            <div class="customer-info">
+                <div class="customer-detail">
+                    <div class="customer-name" id="customerName">Carlos Mendoza</div>
+                    <div class="customer-phone" id="customerPhoneText">555-123-4567</div>
+                </div>
+                <div class="customer-visits">
+                    <div class="visits-count" id="visitsCount">0</div>
+                    <div class="visits-label">visitas acumuladas</div>
                 </div>
             </div>
             
-            <div class="premium-border">
-                <div class="card-loyalty">
-                    <h3>Mi Historial de Visitas</h3>
-                    <button onclick="viewHistory()">Ver mi Historial</button>
-                    <div id="customerHistory"></div>
+            <h3 style="margin: 20px 0 12px; text-align: center; color: var(--cafe-oscuro);">
+                <i class="fas fa-star"></i> Mis Estrellas <i class="fas fa-star"></i>
+            </h3>
+            
+            <div class="stamp-grid" id="stampGrid">
+                <!-- Las estrellas se generarán dinámicamente con JavaScript -->
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalVisits">0</div>
+                    <div class="stat-label">Visitas totales</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="remainingVisits">5</div>
+                    <div class="stat-label">Para próxima recompensa</div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Área de Gerente -->
-        <div id="adminTab" class="tab-content">
-            <div class="premium-border">
-                <div class="admin-section">
-                    <h3>Panel de Control - Gerente</h3>
-                    <div id="pendingRequests">
-                        <p class="text-center">Cargando solicitudes...</p>
-                    </div>
+            
+            <div class="qr-section">
+                <div class="qr-code" id="customerQr">
+                    <i class="fas fa-coffee"></i>
                 </div>
+                <p class="qr-desc">Muestra este código al realizar tu pedido para acumular visitas</p>
             </div>
+            
+            <button class="btn" id="backBtn" style="margin-top: 15px;">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
         </div>
         
-        <div class="footer">
-            Sistema de Lealtad Maestra María • 2023
+        <!-- Sección de Recompensas -->
+        <div class="card" id="rewardsCard">
+            <h2><i class="fas fa-gift"></i> Mis Recompensas</h2>
+            
+            <div class="rewards-section" id="rewardsList">
+                <!-- Las recompensas se generarán dinámicamente con JavaScript -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Configuración de Firebase (debes reemplazar con tus propios valores)
-        const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "tu-proyecto.firebaseapp.com",
-            projectId: "tu-proyecto",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "TU_SENDER_ID",
-            appId: "TU_APP_ID"
-        };
+        // CONFIGURACIÓN DE JSONBIN (TUS DATOS)
+        const BIN_ID = '68b8a06b43b1c97be935dc93';
+        const API_KEY = '$2a$10$CVg51pmEVPT3AsAUJqlyvubFoEM3Za/uRhQzUmO7Ch2dVbgkm2HLW';
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Elementos DOM
+        const tabs = document.querySelectorAll('.tab');
+        const cards = document.querySelectorAll('.card');
+        const registerCard = document.getElementById('registerCard');
+        const consultCard = document.getElementById('consultCard');
+        const loyaltyCard = document.getElementById('loyaltyCard');
+        const rewardsCard = document.getElementById('rewardsCard');
         
-        // Referencias a colecciones
-        const customersRef = db.collection("customers");
-        const visitsRef = db.collection("visits");
-        const pendingRef = db.collection("pendingVisits");
+        const registerName = document.getElementById('registerName');
+        const registerPhone = document.getElementById('registerPhone');
+        const registerEmail = document.getElementById('registerEmail');
+        const registerBtn = document.getElementById('registerBtn');
+        const registerAlert = document.getElementById('registerAlert');
+        const registerAlertMessage = document.getElementById('registerAlertMessage');
         
-        // Estado de la aplicación
-        let currentCustomer = null;
+        const consultPhone = document.getElementById('consultPhone');
+        const consultBtn = document.getElementById('consultBtn');
+        const consultAlert = document.getElementById('consultAlert');
+        const consultAlertMessage = document.getElementById('consultAlertMessage');
         
-        // Función para cambiar entre pestañas
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            if (tabName === 'customer') {
-                document.querySelector('.tab:nth-child(1)').classList.add('active');
-                document.getElementById('customerTab').classList.add('active');
-            } else {
-                document.querySelector('.tab:nth-child(2)').classList.add('active');
-                document.getElementById('adminTab').classList.add('active');
-                loadPendingRequests();
-            }
-        }
+        const customerName = document.getElementById('customerName');
+        const customerPhoneText = document.getElementById('customerPhoneText');
+        const visitsCount = document.getElementById('visitsCount');
+        const totalVisits = document.getElementById('totalVisits');
+        const remainingVisits = document.getElementById('remainingVisits');
+        const stampGrid = document.getElementById('stampGrid');
+        const rewardsList = document.getElementById('rewardsList');
+        const backBtn = document.getElementById('backBtn');
         
-        // Función para solicitar una visita
-        function requestVisit() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            const messageEl = document.getElementById('customerMessage');
-            
-            if (!phone) {
-                showMessage('Por favor ingresa tu número de teléfono', 'error');
-                return;
-            }
-            
-            // Validar formato de teléfono (simple)
-            if (!/^[0-9+]{10,15}$/.test(phone)) {
-                showMessage('Por favor ingresa un número de teléfono válido', 'error');
-                return;
-            }
-            
-            showMessage('Solicitando registro de visita...', 'info');
-            
-            // Guardar la solicitud en pendientes
-            pendingRef.add({
-                phone: phone,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'pending'
-            })
-            .then(() => {
-                showMessage('Solicitud enviada. Espera la autorización del gerente.', 'success');
-                document.getElementById('phoneInput').value = '';
-            })
-            .catch(error => {
-                console.error('Error al solicitar visita:', error);
-                showMessage('Error al enviar la solicitud. Intenta nuevamente.', 'error');
+        let currentClient = null;
+        
+        // Cambiar entre pestañas
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Actualizar pestañas activas
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Mostrar la tarjeta correspondiente
+                cards.forEach(card => card.classList.remove('active'));
+                if (tabId === 'register') {
+                    registerCard.classList.add('active');
+                } else {
+                    consultCard.classList.add('active');
+                }
             });
-        }
+        });
         
-        // Función para mostrar mensajes al cliente
-        function showMessage(message, type) {
-            const messageEl = document.getElementById('customerMessage');
-            messageEl.textContent = message;
-            messageEl.className = 'alert';
-            messageEl.classList.add(`alert-${type}`);
-            messageEl.style.display = 'block';
+        // Mostrar alerta
+        function showAlert(alertElement, messageElement, message, type) {
+            messageElement.textContent = message;
+            alertElement.className = `alert alert-${type}`;
+            alertElement.classList.remove('hidden');
             
-            // Ocultar el mensaje después de 5 segundos
             setTimeout(() => {
-                messageEl.style.display = 'none';
+                alertElement.classList.add('hidden');
             }, 5000);
         }
         
-        // Función para cargar solicitudes pendientes (área de gerente)
-        function loadPendingRequests() {
-            const pendingEl = document.getElementById('pendingRequests');
-            pendingEl.innerHTML = '<p class="text-center">Cargando solicitudes...</p>';
-            
-            pendingRef.where('status', '==', 'pending').orderBy('timestamp', 'desc')
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        pendingEl.innerHTML = '<p class="text-center">No hay solicitudes pendientes</p>';
-                        return;
+        // Obtener clientes
+        async function getClients() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'X-Master-Key': API_KEY
                     }
-                    
-                    let html = '';
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        html += `
-                            <div class="request-item">
-                                <div>
-                                    <strong>${data.phone}</strong>
-                                    <div class="history-date">${formatDate(data.timestamp?.toDate())}</div>
-                                </div>
-                                <div class="request-actions">
-                                    <button class="btn-approve" onclick="approveVisit('${doc.id}', '${data.phone}')">Aprobar</button>
-                                    <button class="btn-deny" onclick="denyVisit('${doc.id}')">Rechazar</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    
-                    pendingEl.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error al cargar solicitudes:', error);
-                    pendingEl.innerHTML = '<p class="text-center">Error al cargar solicitudes</p>';
                 });
+                
+                if (!response.ok) {
+                    throw new Error('Error al obtener datos');
+                }
+                
+                const data = await response.json();
+                return data.record.clients || [];
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(registerAlert, registerAlertMessage, 'Error al conectar con la base de datos', 'error');
+                return [];
+            }
         }
         
-        // Función para aprobar una visita
-        function approveVisit(requestId, phone) {
-            // Primero, obtener o crear el cliente
-            customersRef.where('phone', '==', phone).get()
-                .then(snapshot => {
-                    let customerId;
-                    
-                    if (snapshot.empty) {
-                        // Crear nuevo cliente
-                        return customersRef.add({
-                            phone: phone,
-                            visits: 1,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastVisit: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(docRef => {
-                            customerId = docRef.id;
-                            // Registrar la visita
-                            return visitsRef.add({
-                                customerId: customerId,
-                                phone: phone,
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                approvedBy: 'manager'
-                            });
-                        });
-                    } else {
-                        // Cliente existente
-                        const customerDoc = snapshot.docs[0];
-                        customerId = customerDoc.id;
-                        const currentVisits = customerDoc.data().visits || 0;
-                        
-                        // Actualizar el contador de visitas
-                        return customersRef.doc(customerId).update({
-                            visits: currentVisits + 1,
-                            lastVisit: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(() => {
-                            // Registrar la visita
-                            return visitsRef.add({
-                                customerId: customerId,
-                                phone: phone,
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                approvedBy: 'manager'
-                            });
-                        });
-                    }
-                })
-                .then(() => {
-                    // Marcar la solicitud como aprobada
-                    return pendingRef.doc(requestId).update({
-                        status: 'approved',
-                        processedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                })
-                .then(() => {
-                    // Recargar las solicitudes pendientes
-                    loadPendingRequests();
-                    showManagerMessage('Visita aprobada correctamente');
-                })
-                .catch(error => {
-                    console.error('Error al aprobar visita:', error);
-                    showManagerMessage('Error al aprobar la visita');
+        // Guardar clientes
+        async function saveClients(clients) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': API_KEY
+                    },
+                    body: JSON.stringify({ clients })
                 });
+                
+                if (!response.ok) {
+                    throw new Error('Error al guardar datos');
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(registerAlert, registerAlertMessage, 'Error al guardar en la base de datos', 'error');
+                return false;
+            }
         }
         
-        // Función para rechazar una visita
-        function denyVisit(requestId) {
-            pendingRef.doc(requestId).update({
-                status: 'denied',
-                processedAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                loadPendingRequests();
-                showManagerMessage('Solicitud rechazada');
-            })
-            .catch(error => {
-                console.error('Error al rechazar visita:', error);
-                showManagerMessage('Error al rechazar la solicitud');
-            });
-        }
-        
-        // Función para mostrar mensaje al gerente
-        function showManagerMessage(message) {
-            // Podrías implementar un sistema de notificación para el gerente
-            console.log("Mensaje para el gerente:", message);
-            alert(message);
-        }
-        
-        // Función para ver el historial del cliente
-        function viewHistory() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            const historyEl = document.getElementById('customerHistory');
+        // Registrar nuevo cliente
+        async function registerClient() {
+            const name = registerName.value.trim();
+            const phone = registerPhone.value.trim();
+            const email = registerEmail.value.trim();
             
-            if (!phone) {
-                showMessage('Por favor ingresa tu número de teléfono primero', 'error');
+            if (!name || !phone) {
+                showAlert(registerAlert, registerAlertMessage, 'Por favor, completa todos los campos obligatorios', 'error');
                 return;
             }
             
-            historyEl.innerHTML = '<p class="text-center">Cargando historial...</p>';
+            // Obtener clientes existentes
+            const clients = await getClients();
             
-            // Buscar el cliente
-            customersRef.where('phone', '==', phone).get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        historyEl.innerHTML = '<p class="text-center">No se encontró historial para este número</p>';
-                        return;
-                    }
-                    
-                    const customerDoc = snapshot.docs[0];
-                    const customerData = customerDoc.data();
-                    
-                    // Obtener todas las visitas del cliente
-                    return visitsRef.where('customerId', '==', customerDoc.id)
-                        .orderBy('timestamp', 'desc')
-                        .get()
-                        .then(visitSnapshot => {
-                            let html = `<p>Total de visitas: <strong>${customerData.visits || 0}</strong></p>`;
-                            
-                            if (visitSnapshot.empty) {
-                                html += '<p>No hay visitas registradas</p>';
-                            } else {
-                                html += '<div style="max-height: 300px; overflow-y: auto;">';
-                                visitSnapshot.forEach(visitDoc => {
-                                    const visitData = visitDoc.data();
-                                    html += `
-                                        <div class="history-item">
-                                            <div>Visita registrada</div>
-                                            <div class="history-date">${formatDate(visitData.timestamp?.toDate())}</div>
-                                        </div>
-                                    `;
-                                });
-                                html += '</div>';
-                            }
-                            
-                            historyEl.innerHTML = html;
-                            
-                            // Actualizar la visualización de estrellas
-                            updateStampGrid(customerData.visits || 0);
-                        });
-                })
-                .catch(error => {
-                    console.error('Error al cargar historial:', error);
-                    historyEl.innerHTML = '<p class="text-center">Error al cargar el historial</p>';
-                });
+            // Verificar si el cliente ya existe
+            const clientExists = clients.some(client => client.phone === phone);
+            if (clientExists) {
+                showAlert(registerAlert, registerAlertMessage, 'Este número de teléfono ya está registrado', 'error');
+                // Cambiar a la pestaña de consulta
+                tabs[1].click();
+                consultPhone.value = phone;
+                return;
+            }
+            
+            // Agregar nuevo cliente
+            const newClient = {
+                id: Date.now().toString(),
+                name,
+                phone,
+                email,
+                visits: 0,
+                stars: 0,
+                registrationDate: new Date().toISOString(),
+                lastVisit: null
+            };
+            
+            clients.push(newClient);
+            
+            // Guardar en la base de datos
+            const success = await saveClients(clients);
+            
+            if (success) {
+                showAlert(registerAlert, registerAlertMessage, `¡Registro exitoso, ${name}!`, 'success');
+                
+                // Mostrar la tarjeta del cliente
+                loadClientData(newClient);
+                
+                // Ocultar formularios y mostrar tarjeta
+                registerCard.classList.remove('active');
+                consultCard.classList.remove('active');
+                loyaltyCard.classList.add('active');
+                rewardsCard.classList.add('active');
+            }
         }
         
-        // Función para actualizar la cuadrícula de estrellas
-        function updateStampGrid(visits) {
-            const gridEl = document.getElementById('stampGrid');
-            gridEl.innerHTML = '';
+        // Consultar cliente existente
+        async function consultClient() {
+            const phone = consultPhone.value.trim();
             
-            for (let i = 1; i <= 10; i++) {
+            if (!phone) {
+                showAlert(consultAlert, consultAlertMessage, 'Por favor, ingresa tu número de teléfono', 'error');
+                return;
+            }
+            
+            const clients = await getClients();
+            const client = clients.find(c => c.phone === phone);
+            
+            if (!client) {
+                showAlert(consultAlert, consultAlertMessage, 'No se encontró ningún cliente con este número', 'error');
+                return;
+            }
+            
+            // Mostrar la tarjeta del cliente
+            loadClientData(client);
+            
+            // Ocultar formularios y mostrar tarjeta
+            consultCard.classList.remove('active');
+            loyaltyCard.classList.add('active');
+            rewardsCard.classList.add('active');
+            
+            showAlert(consultAlert, consultAlertMessage, `¡Bienvenido ${client.name}!`, 'success');
+        }
+        
+        // Cargar datos del cliente en la tarjeta
+        function loadClientData(client) {
+            currentClient = client;
+            
+            // Mostrar información del cliente
+            customerName.textContent = client.name;
+            customerPhoneText.textContent = client.phone;
+            visitsCount.textContent = client.visits;
+            totalVisits.textContent = client.visits;
+            remainingVisits.textContent = Math.max(0, 5 - (client.visits % 5));
+            
+            // Actualizar estampas
+            updateStampGrid(client.visits);
+            
+            // Actualizar recompensas
+            updateRewards(client.visits);
+        }
+        
+        // Volver atrás
+        function goBack() {
+            loyaltyCard.classList.remove('active');
+            rewardsCard.classList.remove('active');
+            consultCard.classList.add('active');
+            consultPhone.value = '';
+        }
+        
+        // Actualizar cuadrícula de estampas
+        function updateStampGrid(visits) {
+            stampGrid.innerHTML = '';
+            
+            // Calcular el número de estrellas completas (cada 5 visitas = 1 estrella)
+            const completedStars = Math.floor(visits / 5);
+            const currentProgress = visits % 5;
+            
+            for (let i = 1; i <= 5; i++) {
                 const stampSlot = document.createElement('div');
                 stampSlot.className = 'stamp-slot';
                 
-                if (i <= visits) {
+                if (i <= currentProgress) {
                     stampSlot.classList.add('stamped');
-                    const starImg = document.createElement('img');
-                    // En un caso real, aquí usarías tu imagen de Canva
-                    starImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23FFD700" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
-                    starImg.alt = 'Estrella dorada';
-                    starImg.className = 'gold-star';
-                    stampSlot.appendChild(starImg);
-                    
-                    // Añadir insignia VIP después de 5 visitas
-                    if (i === 5) {
-                        const vipBadge = document.createElement('div');
-                        vipBadge.className = 'vip-badge';
-                        vipBadge.innerHTML = '5';
-                        stampSlot.appendChild(vipBadge);
-                    }
+                    const starIcon = document.createElement('i');
+                    starIcon.className = 'fas fa-star gold-star';
+                    stampSlot.appendChild(starIcon);
                 } else {
                     stampSlot.textContent = i;
                 }
                 
-                gridEl.appendChild(stampSlot);
+                stampGrid.appendChild(stampSlot);
             }
-        }
-        
-        // Función auxiliar para formatear fechas
-        function formatDate(date) {
-            if (!date) return 'Fecha no disponible';
             
-            return new Intl.DateTimeFormat('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            }).format(date);
+            // Mostrar contador de recompensas ganadas
+            const rewardCounter = document.createElement('div');
+            rewardCounter.style.gridColumn = '1 / -1';
+            rewardCounter.style.textAlign = 'center';
+            rewardCounter.style.marginTop = '8px';
+            rewardCounter.style.color = 'var(--cafe-medio)';
+            rewardCounter.innerHTML = `<i class="fas fa-trophy"></i> Has ganado ${completedStars} recompensa(s) completa(s)`;
+            stampGrid.appendChild(rewardCounter);
         }
         
-        // Inicializar la cuadrícula de estrellas
-        updateStampGrid(0);
+        // Actualizar recompensas disponibles
+        function updateRewards(visits) {
+            rewardsList.innerHTML = '';
+            
+            const rewards = [
+                { visits: 5, title: 'Café Gratis', desc: 'Canjea después de 5 visitas', icon: 'coffee' },
+                { visits: 10, title: 'Postre Gratis', desc: 'Canjea después de 10 visitas', icon: 'cookie' },
+                { visits: 15, title: 'Desayuno Completo', desc: 'Canjea después de 15 visitas', icon: 'bacon' },
+                { visits: 20, title: 'Combo Especial', desc: 'Canjea después de 20 visitas', icon: 'gift' }
+            ];
+            
+            rewards.forEach(reward => {
+                const rewardItem = document.createElement('div');
+                rewardItem.className = 'reward-item';
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                if (visits >= reward.visits) {
+                    statusClass = 'status-available';
+                    statusText = 'Disponible';
+                } else {
+                    statusClass = 'status-pending';
+                    statusText = `Faltan ${reward.visits - visits} visitas`;
+                }
+                
+                rewardItem.innerHTML = `
+                    <div class="reward-icon">
+                        <i class="fas fa-${reward.icon}"></i>
+                    </div>
+                    <div class="reward-info">
+                        <div class="reward-title">${reward.title}</div>
+                        <div class="reward-desc">${reward.desc}</div>
+                    </div>
+                    <div class="reward-status ${statusClass}">${statusText}</div>
+                `;
+                
+                rewardsList.appendChild(rewardItem);
+            });
+        }
+        
+        // Event Listeners
+        registerBtn.addEventListener('click', registerClient);
+        consultBtn.addEventListener('click', consultClient);
+        backBtn.addEventListener('click', goBack);
+        
+        registerPhone.addEventListener('keypress', e => { if (e.key === 'Enter') registerClient(); });
+        consultPhone.addEventListener('keypress', e => { if (e.key === 'Enter') consultClient(); });
     </script>
 </body>
 </html>
